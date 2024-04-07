@@ -1,9 +1,9 @@
-const express = require('express');
-const app = express();
-const port = 3000;
+import express, { Response, Request, Express } from 'express';
+import sharp from 'sharp';
+import path from 'path';
 
-const sharp = require('sharp');
-const path = require('path');
+const app: Express = express();
+const port = 3001;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -13,7 +13,7 @@ app.listen(port, () => {
   console.log(`image compressor online: http://localhost:${port} 🛜`);
 });
 
-app.post('/compress', async (req, res) => {
+app.post('/compress', async (req: Request, res: Response) => {
   try {
     const { name, type, size, quality } = req.body;
 
@@ -42,8 +42,26 @@ app.post('/compress', async (req, res) => {
   }
 });
 
-function isValidBody({ name, type, size, quality }) {
+function isValidBody({
+  name,
+  type,
+  size,
+  quality,
+}: {
+  name: string;
+  type: string;
+  size: number;
+  quality: number;
+}) {
   if (!name || !type || !size || !quality) {
+    return false;
+  }
+  if (
+    typeof name !== 'string' ||
+    typeof type !== 'string' ||
+    typeof size !== 'number' ||
+    typeof quality !== 'number'
+  ) {
     return false;
   }
   return true;
